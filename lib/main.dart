@@ -1,66 +1,78 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const Tetris());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Tetris extends StatelessWidget {
+  const Tetris({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Tetris',
+      home: HomePage(title: 'Homepage'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+// --> Size of the board is 10x24
 
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key, required this.title}) : super(key: key);
   final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('Tetris', style: TextStyle(color: Colors.blue)),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 1,
+        shadowColor: Colors.transparent,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      body: const Matrix(),
+    );
+  }
+}
+
+class Matrix extends StatelessWidget {
+  const Matrix({Key? key}) : super(key: key);
+
+  Widget cell() {
+    return Container(
+      width: 30,
+      height: 30,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.red),
       ),
     );
+  }
+
+  Row rowBuilder() {
+    final List<Widget> rowList = [];
+    for (int i = 0; i < 10; i++) {
+      rowList.add(cell());
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: rowList,
+    );
+  }
+
+  Column colBuilder() {
+    final List<Widget> colList = [];
+    for (int i = 0; i < 20; i++) {
+      colList.add(rowBuilder());
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: colList,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: colBuilder());
   }
 }
